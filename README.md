@@ -1,2 +1,3 @@
 # FunctionAnalysis
-Numerical Analysis Tools
+University of Houston - Numerical Analysis
+Dr. Jeffrey Morgan
