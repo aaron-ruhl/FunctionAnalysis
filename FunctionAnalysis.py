@@ -29,7 +29,7 @@ class Function():
             
     @classmethod
     def _fromfunction(cls, function):
-        '''Returns a callable object wiht methods'''
+        '''Returns a callable object with methods'''
         return _Analysis(function)
     
     @classmethod
