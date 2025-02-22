@@ -1,3 +1,2 @@
 # FunctionAnalysis
-University of Houston - Numerical Analysis
-Dr. Jeffrey Morgan
+University of Houston - Numerical Analysis, Dr. Jeffrey Morgan
