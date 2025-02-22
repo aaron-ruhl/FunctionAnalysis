@@ -67,9 +67,6 @@ class _Analysis():
         results = _np.array(args, float)
         func_vector = _np.vectorize(self._function)
         results = func_vector(results)
-        '''for x in args:
-            results.append(self._function(x))
-        '''
         return results
     
     def plotfx(self, start: int, end: int, label = None, magnification: float = None, clear: bool = None, block: bool = None):
