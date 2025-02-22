@@ -17,7 +17,7 @@ if __name__ == '__main__': #run as an executable to get __name__ == '__main__'
 
 
 class Function():
-    '''Add additional tools for analysis to a numerical function.
+    '''Analysis of a numerical function.
     **Seperate multiple functions with a comma**
             Ex: Function(f,g,h) or Function(f)'''
     
@@ -42,7 +42,6 @@ class Function():
 
    
 class _Analysis():
-    '''Internal API'''  
     def __init__(self, function: object):
         if isinstance(function, int | float | str | list | dict | tuple | None ):
             raise ValueError('Must input a non-iterable, numerical function object.')
