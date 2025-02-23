@@ -1,4 +1,4 @@
-# FunctionAnalysis (WorkInProgress)
+# FunctionAnalysis (WIP)
 University of Houston - Numerical Analysis, Dr. Jeffrey Morgan
 
 
