@@ -271,9 +271,9 @@ class _Analysis():
                 return [rtable[0,i+1],i+2]
         return print("tolerance not met")
 
-    def newtons(self, df, x, *, iters = None) -> (zero, f(zero)):
+    def newtons(self, df, x, *, iters = None) -> '(zero, f(zero))':
         '''Newtons Method to approximate a zero. Must input instantiated function derivative.
-        Can use "f1 = Function.fromlist(f,df)" then "f1[0].newtons(f1[1].calc,x)"'''
+        Can use "f1 = Function(f,df)" then "f1[0].newtons(f1[1].calc,x)"'''
 
         # default value of iterations is 8
         if iters == None:
