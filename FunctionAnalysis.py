@@ -3,8 +3,9 @@
 import matplotlib.pyplot as _plt
 import numpy as _np
 from array import array as _array
-            
-if __name__ == '__main__': #run as an executable to get __name__ == '__main__'   
+
+# This will be ignored if importing FunctionAnalysis            
+if __name__ == '__main__':   
     def f(x: float) -> 'f(x)':
         '''This function was initialized by FunctionAnalysis'''
         return _np.tan(_np.sqrt(x**2+1)) 
@@ -17,8 +18,7 @@ if __name__ == '__main__': #run as an executable to get __name__ == '__main__'
 
 
 class Function():
-    '''Analysis of a numerical function.
-    **Seperate multiple functions with a comma**
+    '''Seperate multiple functions with a comma.
             Ex: Function(f,g,h) or Function(f)'''
     
     def __new__(cls,*args):
@@ -28,13 +28,13 @@ class Function():
             return cls._fromlist(*args)
             
     @classmethod
-    def _fromfunction(cls, function):
-        '''Returns a callable object with methods'''
+    def _fromfunction(cls, function) -> 'function':
+        '''Returns _Analysis object'''
         return _Analysis(function)
     
     @classmethod
-    def _fromlist(cls, *args) -> 'functions list':
-        '''Returns an iterable list of objects that are each callable with methods'''
+    def _fromlist(cls, *args) -> list:
+        '''Returns an iterable list of _Analysis objects'''
         functionlist = []
         for func in args: 
             functionlist.append(_Analysis(func)) 
@@ -42,10 +42,11 @@ class Function():
 
    
 class _Analysis():
-    def __init__(self, function: object):
-        if isinstance(function, int | float | str | list | dict | tuple | None ):
-            raise ValueError('Must input a non-iterable, numerical function object.')
-        self._function = function
+    '''Function Analysis Tools'''  
+    def __init__(self, possible_function):
+        if isinstance(possible_function, int | float | str | list | dict | tuple | None ):
+            raise ValueError(f"Unsupported Function Detected: {possible_function}={type(possible_function)}")
+        self._function = possible_function
     
     def __repr__(self):
         return f'Function({self._function})'
@@ -57,21 +58,25 @@ class _Analysis():
     @function.setter
     def function(self, possible_function):
         if isinstance(possible_function, int | float | str | list | dict | tuple | None ):
-            raise ValueError('Must create a non-iterable, numerical function object for analysis.')        
+            raise ValueError(f"Unsupported Function Detected: {possible_function}={type(possible_function)}")        
         self._function = possible_function
         
-    def calc(self, *args) -> 'f(x) list': 
+    def calc(self, *args) -> list: 
         '''Returns values of the instantiated function 
         **Seperate multiple inputs with commas**
-            Ex: calc(2,3,4,5)'''   
+            Ex: calc(2,3,4,5)'''
         results = _np.array(args, float)
+        if results.size == 0:
+            return results
         func_vector = _np.vectorize(self._function)
         results = func_vector(results)
+        '''for x in args:
+            results.append(self._function(x))
+        '''
         return results
     
-    def plotfx(self, start: int, end: int, label = None, magnification: float = None, clear: bool = None, block: bool = None):
-        '''Displays the result of the instantiated function, needs start/end of domain.'''
-        '''"num" is value where line will appear on plot.'''
+    def plotfx(self, start, end,*, label = None, magnification: float = None, clear: bool = None, block: bool = None):
+        '''Displays the result of the instantiated function. Needs start and end of domain.'''
         
         # by default clear = True
         if clear == None or clear == True:
@@ -88,8 +93,9 @@ class _Analysis():
         # by default the label = _Analysis.__repr__    
         if label == None:
             label = self.function
+            
         # set the domain 
-        XVALS = [x for x in _np.arange(start,end,magnification)]
+        XVALS = [x for x in _np.arange(int(start),int(end),magnification)]
 
         # display results
         func_values = self.calc(*XVALS)
@@ -103,6 +109,7 @@ class _Analysis():
     def mdpt(self,n,a,b):
         h=(b-a)/n
         x=a+h/2
+        s=0
         for i in range(n):
             s=s+self.calc(x)[0]
             x=x+h
@@ -121,7 +128,7 @@ class _Analysis():
     def simpsons(self,n,a,b):
         return 1/3*self.trap(n,a,b)+2/3*self.mdpt(n,a,b)
     
-    def secant(self, p_n_minus1: float, p_n: float):
+    def secant(self, p_n_minus1, p_n) -> float:
         '''Using a given interval: (p_n_minus1, p_n) find zeros of the function.
         Choose p_n_minus1 within a sufficiently small distance from  
         a suspected zero of the instantiated function'''
@@ -133,7 +140,7 @@ class _Analysis():
         current_p = p_n_plus1(p_n_minus1, p_n)
 
         # Check if the error is close to zero
-        while abs(current_p - p_n) > 10e-12:
+        while abs(current_p - p_n) > 10e-6:
             
             # move one step forward 
             p_n, p_n_minus1 = current_p, p_n 
@@ -141,7 +148,7 @@ class _Analysis():
             
         return current_p
     
-    def bisect(self, start: int, end: int, lazy: bool=False):
+    def bisect(self, start, end,*, lazy=False) -> float:
         '''Perform bisection method between the given interval: ([start, end])
             choose start and end so this interval brackets at least one zero.'''
 
@@ -157,7 +164,7 @@ class _Analysis():
         #check if p_n is a zero
         while abs(a - (p_n) )  > 1e-12:
 
-            #check for 0; if not lazy evaluation 
+            #check for 0 & if not lazy evaluation 
             if self.calc(p_n)[0]==0 and lazy == False: 
                 return p_n
             elif self.calc(a)[0]*self.calc(p_n)[0] <= 0:
@@ -169,7 +176,7 @@ class _Analysis():
         return p_n
         
 
-    def findall(self, start: float, end: float, N: int=10000) -> list:
+    def findall(self, start, end,*, N: int=10000) -> list:
         '''Taking in an interval and scanning that interval for when the
             instantiated function equals zero. Returns number of zeros, and a list of zeros.
             N is the number of steps or "Magnification'''
@@ -177,30 +184,31 @@ class _Analysis():
         if start>=end:
             return print(f'{start} is not less than {b}')
         
-        zero_list = _array('d', []) # this will store the values for all zeros
-        dx: float = (end - start) / N
+        zero_list = _array('d',[]) 
+        dx = (end - start) / N
         XVAL_start, XVAL_end = int(start-3*dx), int(end+3*dx)  #adding padding proportional to dx
-        zero_count: int = 0
-        x_n: float = start # N=0 here        
+        zero_count = 0
+        x_n = start # n=0 here        
         
         for i in range(N):
-            x_n_plus1: float = x_n + dx
+            x_n_plus1 = x_n + dx
             
             if self.calc(x_n)[0]*self.calc(x_n_plus1)[0] < 0: # if zero was detected
-                zero_list.append(self.secant(x_n,x_n_plus1)) # add a zero to list
+                zero = self.secant(x_n,x_n_plus1)
+                zero_list.append(zero) 
                 zero_count += 1
                 
             x_n = x_n_plus1 # move x_n to x_n+1
 
         # Display result
         _plt.cla() #clear axes
-        _plt.plot(zero_list,self.calc(*zero_list),'ro')# red dot at each zero
+        _plt.plot(zero_list,0,'ro')# red dot at each zero
         self.plotfx(XVAL_start, XVAL_end, clear=False,label=f'{zero_count} zeros')# plot the function
             
         return [zero for zero in zero_list], zero_count
 
 
-    def findnumber(self, start, end, M: int= 10000):
+    def findnumber(self, start, end,*, M: int= 10000) -> int:
         '''
         Scans the given interval for when the function changes sign and marks it as a zero.
         "M" is the number of steps or magnification.
@@ -226,10 +234,13 @@ class _Analysis():
         return num_zeros
 
 
-    def romb(self, tol: 'tolerance',a: 'start',b: 'end') -> float:
+    def romb(self, a,b, *, tol=None,n=None) -> float:
         """This approximates the integral of the instantiated function
-        from a to b. Max level will be n"""
-        n: int = 30
+        from a to b. Tol is tolerance, Max level will be n"""
+        if tol == None:
+            tol = 10**-13
+        if n == None:
+            n = 30
         rtable = _np.zeros((n,n))
         """trap(function,1,a,b) loaded into rtable[0,0]"""
         rtable[0,0]=(self.calc(a)[0]+self.calc(b)[0])*(b-a)/2
@@ -242,10 +253,12 @@ class _Analysis():
         return print("tolerance not met")
 
 
-    def richmid(self, tol: 'tolerance',a: 'start',b: 'end') -> float:
+    def richmid(self, a,b, *, tol=None) -> float:
         """This approximates the integral of the instantiated function
         from a to b. Max level will be n"""
         """this makes many more function evals than romb"""
+        if tol == None:
+            tol = 10**-13        
         n: int = 30
         rtable=_np.zeros((n,n))
         """mdpt(function loaded into rtable[0,0]"""
@@ -258,9 +271,9 @@ class _Analysis():
                 return [rtable[0,i+1],i+2]
         return print("tolerance not met")
 
-    def newtons(self, df: "f'(x)", x: 'starting value', iters: 'numer of iterations' = None):
+    def newtons(self, df, x, *, iters = None) -> (zero, f(zero)):
         '''Newtons Method to approximate a zero. Must input instantiated function derivative.
-        Can use "f1 = Function.fromlist(f,df)" and "f1[0].newtons(f1[1].calc,x)"'''
+        Can use "f1 = Function.fromlist(f,df)" then "f1[0].newtons(f1[1].calc,x)"'''
 
         # default value of iterations is 8
         if iters == None:
@@ -269,19 +282,19 @@ class _Analysis():
             x=x-self.calc(x)[0]/df(x) #Newtons method
         return f'x={_np.ravel(x)}, f(x)={_np.ravel(self.calc(x)[0])}' # return (x, f(x)) as non-iterable
 
-    def endpoint(self, value: 'integral_0-to-z_f(x) = value', x_0: "First x for Newton's Method")-> 'z':
-        '''Using Newton's method with the approximation of an integral to approximate z.
-        f(x) is instantiated function.
+    def endpoint(self, value, x_0)-> 'z':
+        '''Using Newton's method with the romberg approximation of an integral to approximate z.
+        Evaluating integral_0^z {f(x)}dx = value, with f(x) being the instantiated funcion.
         ***Convergence is not guaranteed, interrupt if it does not return right away.***'''
         
         def H(z: float) -> 'H(z)':
-            return self.romb(10**-10,0,z)[0] - value
+            return self.romb(0,z)[0] - value
         
         f2 = Function._fromfunction(H)
 
         return f2.newtons(self._function,x_0)
 
-    def localsqrt(self,a: float) -> 'sqrt(a)':
+    def localsqrt(self, a) -> 'sqrt(a)':
             
         #by default p_0 = a/2
         current_p = a/2 
@@ -294,4 +307,6 @@ class _Analysis():
         return current_p
 
         
+ 
+
  
