@@ -2,8 +2,10 @@
 University of Houston - Numerical Analysis, Dr. Jeffrey Morgan
 
 
-This was made purely for learning purposes. I neded to save what I learned in this course.
+This was made purely for learning purposes. I neded to access methods for assignments in this course. These functions behave reasonably well together as one large class. However, must use the tools carefully. Each method has assumptions that must be satisfied so bugs can also be of a mathematical nature; especially in terms of convergence.
 
-Must use the tools carefully. Each method has assumptions that must be satisfied. 
-For example, with the built in function(f or df), using findall(0,2) will produce the wrong result, but findall(1,2) will work as intended.
-Bugs can also be of a mathematical nature, especially in terms of convergence.
+
+For example, 
+
+try 'f1 = Function(f)', then 'findall(0,2)'. This will produce the wrong result, but 'findall(1,2)' will work as intended and find the correct zero of f on the interval (0,2). 
+
