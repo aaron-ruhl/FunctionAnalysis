@@ -2,7 +2,7 @@
 University of Houston - Numerical Analysis, Dr. Jeffrey Morgan
 
 
-This was made purely for learning purposes. I neded to access methods for assignments in this course. These functions behave reasonably well together as one large class. However, must use the tools carefully. Each method has assumptions that must be satisfied so bugs can also be of a mathematical nature; especially in terms of convergence.
+This was made purely for learning purposes based on a course taught by Dr. Jeffrey Morgan. These functions behave reasonably well together as one large class. However, one must use the tools carefully. Each method has assumptions that must be satisfied so bugs can also be of a mathematical nature; especially in terms of convergence. I have not added sophisticated error or case handling.
 
 
 For example, 
